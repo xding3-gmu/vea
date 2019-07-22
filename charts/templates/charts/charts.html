@@ -1,0 +1,185 @@
+{% extends 'charts/base.html' %}
+
+<script>
+{% block jquery %}
+
+var endpoint_prefix ='/vea/api?';
+
+var months = [ "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December" ];
+
+var caption = "Fenwich Library Local Traffic : " ;
+var rang = "Current Occupancy" ;
+
+$(document).ready(function() {
+    var endpoint = endpoint_prefix + 'q=today&g=hour&z=ocp';
+    fetchData(endpoint);
+} );
+
+function fetchData( endpoint){
+    var sumins = []
+    var labels = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+            labels = data.labels
+            sumins = data.sumins
+            setChart(sumins,labels)
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+}
+function setChart(sumins,labels){
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        "type": "line",
+        "data": {
+            "labels": labels,
+            "datasets": [{
+                "label": caption + rang,
+                "data": sumins,
+                "fill": false,
+                "borderColor": "rgb(0, 192, 200)",
+                "lineTension": 0.1
+            }]
+        },
+        "options": {}
+});   
+}
+
+$( "#lastmonth" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=lastmonth&g=day';
+    rang = "Last Month (Ins)";
+    fetchData(endpoint);
+    var d = new Date();
+    var n = d.getMonth() - 1;
+    $( "#rangtext" ).html("Data Range : " + months[n] + ' ' + d.getFullYear());
+});
+
+$( "#lastweek" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=lastweek&g=day';
+    rang = "Last Week (Ins)";
+    fetchData(endpoint);
+    var d = new Date();
+    var to = d.setTime(d.getTime() - (d.getDay() ? d.getDay() : 7) * 24 * 60 * 60 * 1000);
+    var from = d.setTime(d.getTime() - 6 * 24 * 60 * 60 * 1000);
+    var x = new Date(from);
+    var y = new Date(to);
+    $( "#rangtext" ).html("Data Range from : " + x.toDateString() + ' to ' + y.toDateString() );
+});
+
+$( "#today" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=today&g=hour';
+    rang = "Today (Ins)";
+    fetchData(endpoint);
+    var d = new Date();
+    $( "#rangtext" ).html("Data Range : " + d.toDateString());
+});
+
+$( "#current" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=today&g=hour&z=ocp';
+    rang = "Current Occupancy ";
+    fetchData(endpoint);
+    var d = new Date();
+    $( "#rangtext" ).html("Data Range : " + d.toDateString());
+});
+
+$( "#monthtodate" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=monthtodate&g=day';
+    var d = new Date();
+    var n = d.getMonth();
+    $( "#rangtext" ).html("Data Range : " + months[n] + ' ' + d.getFullYear());
+    rang = months[n] + ' ' + d.getFullYear() ;
+    fetchData(endpoint);
+   
+
+});
+
+$( "#go" ).click(function() {
+    var from = $( "#from" ).val();
+    var to = $( "#to").val();
+    var endpoint = endpoint_prefix + 'q=custom&f='+from+'&t='+ to +'&g=day';
+
+    $( "#to").val("");
+    $( "#from" ).val("");
+    $( "#rangtext" ).html("Data Range from : " + from + '  to ' + to);
+    rang = "Data Range from : " + from + '  to ' + to;
+
+    if (from == to) {  //same day
+        endpoint = endpoint_prefix + 'q=custom&f='+from+'&t='+ to +'&g=hour';
+    }
+    
+    fetchData(endpoint);
+  
+});
+
+$(function() {              
+           // Bootstrap DateTimePicker v4
+           $('#datetimepicker6').datetimepicker({
+                 format: 'YYYY-MM-DD'
+           });
+
+           $('#datetimepicker7').datetimepicker({
+                 format: 'YYYY-MM-DD'
+           });
+}); 
+
+
+
+{% endblock %}
+</script>
+
+{% block content %}
+
+<div class='container'>
+    <div class='col-sm-12' url-endpoint='{% url "api-data" %}'>
+        <div class='col-sm-8'>
+            <div class='row align-items-end with-margin' >
+                    <button id="current" class="btn btn-primary">Today's Occupancy</button>
+                    <button id="today" class="btn btn-primary">Today(Ins)</button>
+                    <button id="lastweek" class="btn btn-primary">Last Week</button>
+                    <button id="monthtodate" class="btn btn-primary">This Month</button>
+                    <button id="lastmonth"class="btn btn-primary">Last Month</button>
+            </div>
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
+
+        </div>
+        <div class="col-xs-4">
+ 
+            <div class='row'>
+                <div class='col-3'>
+                  <div>From:</div>
+                  <div class="form-group">
+                    <div class='input-group date' id='datetimepicker6'>
+                      <input type='text' class="form-control" id='from' />
+                      <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class='col-3'>
+                  <div>To:</div>
+                  <div class="form-group">
+                    <div class='input-group date' id='datetimepicker7'>
+                      <input type='text' class="form-control" id='to' />
+                      <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button id="go"class="btn btn-primary">Go</button>
+              </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
