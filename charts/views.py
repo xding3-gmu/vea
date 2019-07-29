@@ -149,7 +149,11 @@ def prepare_monthly(data):
     for i in data["results"]: 
             timestr = i['recordDate_day_1'] #only show the first campus info
             utc = datetime.datetime.strptime(timestr, "%Y-%m-%dT%H:%M:%S.%fZ")
-            l = utc.strftime("%m/%d")  
+            from_zone = tz.tzutc()
+            to_zone = timezone('US/Eastern')
+            utc = utc.replace(tzinfo=from_zone)
+            east = utc.astimezone(to_zone)
+            l = east.strftime("%m/%d")  
             source['labels'].append(l)
             source['sumins'].append(int(i['sumins']))
     print(source)
