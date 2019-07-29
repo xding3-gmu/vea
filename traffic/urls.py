@@ -7,7 +7,7 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('vea/', include('charts.urls')),
+    path( '', include('charts.urls')),
     path('admin/', admin.site.urls),
 ]
 
