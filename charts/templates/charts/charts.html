@@ -8,16 +8,19 @@ var endpoint_prefix ='/vea/api?';
 var months = [ "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December" ];
 
-var caption = "Fenwich Library Local Traffic : " ;
-var rang = "Current Occupancy" ;
+var caption = "Fenwick Library Local Traffic : " ;
+var rang = "Today" ;
 
 $(document).ready(function() {
     var endpoint = endpoint_prefix + 'q=today&g=hour&z=ocp';
     fetchData(endpoint);
+    var d = new Date();
+    $( "#rangtext" ).html("Data Range : " + d.toDateString());
 } );
 
+
 function fetchData( endpoint){
-    var sumins = []
+    var sumins = [];
     var labels = [];
     $.ajax({
         method: "GET",
@@ -32,6 +35,7 @@ function fetchData( endpoint){
             console.log(error_data)
         }
     })
+    
 }
 function setChart(sumins,labels){
     var ctx = document.getElementById("myChart");
@@ -65,16 +69,17 @@ $( "#lastweek" ).click(function() {
     rang = "Last Week (Ins)";
     fetchData(endpoint);
     var d = new Date();
-    var to = d.setTime(d.getTime() - (d.getDay() ? d.getDay() : 7) * 24 * 60 * 60 * 1000);
+    var to = d.setTime(d.getTime() - (d.getDay() ? d.getDay() + 1 : 7) * 24 * 60 * 60 * 1000);
     var from = d.setTime(d.getTime() - 6 * 24 * 60 * 60 * 1000);
     var x = new Date(from);
     var y = new Date(to);
     $( "#rangtext" ).html("Data Range from : " + x.toDateString() + ' to ' + y.toDateString() );
+
 });
 
 $( "#today" ).click(function() {
     var endpoint = endpoint_prefix + 'q=today&g=hour';
-    rang = "Today (Ins)";
+    rang = "Today";
     fetchData(endpoint);
     var d = new Date();
     $( "#rangtext" ).html("Data Range : " + d.toDateString());
@@ -82,7 +87,7 @@ $( "#today" ).click(function() {
 
 $( "#current" ).click(function() {
     var endpoint = endpoint_prefix + 'q=today&g=hour&z=ocp';
-    rang = "Current Occupancy ";
+    rang = "Today";
     fetchData(endpoint);
     var d = new Date();
     $( "#rangtext" ).html("Data Range : " + d.toDateString());
@@ -137,19 +142,24 @@ $(function() {
 
 <div class='container'>
     <div class='col-sm-12' url-endpoint='{% url "api-data" %}'>
-        <div class='col-sm-8'>
-            <div class='row align-items-end with-margin' >
-                    <button id="current" class="btn btn-primary">Today's Occupancy</button>
-                    <button id="today" class="btn btn-primary">Today(Ins)</button>
-                    <button id="lastweek" class="btn btn-primary">Last Week</button>
-                    <button id="monthtodate" class="btn btn-primary">This Month</button>
-                    <button id="lastmonth"class="btn btn-primary">Last Month</button>
-            </div>
-            <canvas id="myChart" width="400" height="400"></canvas>
-            <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
-
+        <div class='row' id="charttitle">
+                    <h2>How many people are in Fenwick ?</h2>
         </div>
-        <div class="col-xs-4">
+        <div class='col-sm-6'>
+            <canvas id="myChart" width="400" height="350"></canvas>
+           
+        </div>
+        <div class="col-sm-6">
+            <div class='row align-items-end with-margin' >
+                <button id="current" class="btn btn-primary">Today</button>
+                <!-- <button id="today" class="btn btn-primary">Today(Ins)</button> -->
+                <button id="lastweek" class="btn btn-primary">Last Week</button>
+                <button id="monthtodate" class="btn btn-primary">This Month</button>
+                <button id="lastmonth"class="btn btn-primary">Last Month</button>
+            </div>
+            <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
+        </div>
+        <!-- <div class="col-xs-4">
  
             <div class='row'>
                 <div class='col-3'>
@@ -178,7 +188,7 @@ $(function() {
               </div>
             </div>
 
-        </div>
+        </div> -->
     </div>
 </div>
 
