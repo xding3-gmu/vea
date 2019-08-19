@@ -73,7 +73,10 @@ def check_auth_token():
 class HomeView(View):
     check_auth_token()
     def get(self, request, *args, **kwargs):
-        return render(request, 'charts/charts.html', {})
+        dv = ''
+        if 'view' in request.GET :
+            dv = request.GET['view']
+        return render(request, 'charts/charts.html', {'detailview':dv})
 
 
 
