@@ -77,11 +77,12 @@ $( "#lastweek" ).click(function() {
 
 });
 
-$( "#today" ).click(function() {
-    var endpoint = endpoint_prefix + 'q=today&g=hour';
-    rang = "Today";
+$( "#yesterday" ).click(function() {
+    var endpoint = endpoint_prefix + 'q=yesterday&g=hour';
+    rang = "Yesterday";
     fetchData(endpoint);
     var d = new Date();
+    d.setDate(d.getDate()-1);
     $( "#rangtext" ).html("Data Range : " + d.toDateString());
 });
 
@@ -145,20 +146,21 @@ $(function() {
         <div class='row' id="charttitle">
                     <h2>How many people are in Fenwick ?</h2>
         </div>
-        <div class='col-sm-6'>
-            <canvas id="myChart" width="400" height="350"></canvas>
-           
+        <div class ='row  '></div>
+            <div class='col-sm-6'>
+                <canvas id="myChart" width="400" height="350"></canvas>
+            
+            </div>
         </div>
-        <div class="col-sm-6">
-            <div class='row align-items-end with-margin' >
+        <div class='row align-items-end with-margin' >
                 <button id="current" class="btn btn-primary">Today</button>
-                <!-- <button id="today" class="btn btn-primary">Today(Ins)</button> -->
+                <button id="yesterday" class="btn btn-primary">Yesterday</button>
                 <button id="lastweek" class="btn btn-primary">Last Week</button>
                 <button id="monthtodate" class="btn btn-primary">This Month</button>
-                <button id="lastmonth"class="btn btn-primary">Last Month</button>
-            </div>
-            <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
+                <button id="lastmonth"  class="btn btn-primary">Last Month</button>
         </div>
+        <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
+    </div>
         <!-- <div class="col-xs-4">
  
             <div class='row'>
@@ -189,7 +191,7 @@ $(function() {
             </div>
 
         </div> -->
-    </div>
+
 </div>
 
 {% endblock content %}
