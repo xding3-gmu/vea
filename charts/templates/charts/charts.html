@@ -151,6 +151,36 @@ $(function() {
                 <canvas id="myChart" width="400" height="350"></canvas>
             
             </div>
+            {% if detailview %}
+            <div class='col-sm-6'>
+                <div class='row'>
+                    <div class='col-sm-6'>
+                        <div>From:</div>
+                        <div class="form-group">
+                        <div class='input-group date' id='datetimepicker6'>
+                            <input type='text' class="form-control" id='from' />
+                            <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-6'>
+                        <div>To:</div>
+                        <div class="form-group">
+                        <div class='input-group date' id='datetimepicker7'>
+                            <input type='text' class="form-control" id='to' />
+                            <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+                    <button id="go"class="btn btn-primary">Go</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class='row align-items-end with-margin' >
                 <button id="current" class="btn btn-primary">Today</button>
@@ -161,37 +191,7 @@ $(function() {
         </div>
         <div id='rangtext' class='row align-items-end with-margin'>Data Range:</div>
     </div>
-        <!-- <div class="col-xs-4">
  
-            <div class='row'>
-                <div class='col-3'>
-                  <div>From:</div>
-                  <div class="form-group">
-                    <div class='input-group date' id='datetimepicker6'>
-                      <input type='text' class="form-control" id='from' />
-                      <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class='col-3'>
-                  <div>To:</div>
-                  <div class="form-group">
-                    <div class='input-group date' id='datetimepicker7'>
-                      <input type='text' class="form-control" id='to' />
-                      <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <button id="go"class="btn btn-primary">Go</button>
-              </div>
-            </div>
-
-        </div> -->
-
 </div>
 
 {% endblock content %}
